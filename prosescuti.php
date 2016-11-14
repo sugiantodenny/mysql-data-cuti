@@ -17,17 +17,24 @@ if (!$conn) {
 }else{
     $tglawal=$_POST["tglawal"];
     $tglakhir=$_POST["tglakhir"];
+    $berhasil = 0;
 
     echo $tglawal." ".$tglakhir;
     $user=$_SESSION["user"];
 
-    $query="INSERT INTO datacuti VALUES ('','$user','$tglawal','$tglakhir')ON duplicate KEY UPDATE tglawal=$tglawal AND tglakhir=$tglakhir";
-    $result=mysqli_query($conn,$query);
+    $cek_data = "SELECT * FROM datacuti WHERE tglawal='$tglawal' AND tglakhir='tglakhir'";
+    $query_check = mysqli_query($conn, $cek_data);
 
-    if ($query){
+    if (mysqli_num_rows($query_check) <= 0){
+      $query="INSERT INTO datacuti VALUES ('','$user','$tglawal','$tglakhir')ON duplicate KEY UPDATE tglawal=$tglawal AND tglakhir=$tglakhir";
+      $result=mysqli_query($conn,$query);
+      $berhasil = 1;
+    }
+
+    if ($berhasil == 1){
         echo "Data berhasil disimpan";
     }else{
-        echo "Data tidak berhasil disimpan";
+        echo "Data redundant";
     }
 }
 }else{
